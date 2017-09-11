@@ -37,8 +37,14 @@ class LogStash::Inputs::Kinesis < LogStash::Inputs::Base
   # unique for this kinesis stream.
   config :application_name, :validate => :string, :default => "logstash"
 
+  # The kinesis endpoint
+  config :kinesis_endpoint, :validate => :string, :default => nil
+
   # The kinesis stream name.
   config :kinesis_stream_name, :validate => :string, :required => true
+
+  # The dynamodb endpoint
+  config :dynamodb_endpoint, :validate => :string, :default => nil
 
   # The AWS region for Kinesis, DynamoDB, and CloudWatch (if enabled)
   config :region, :validate => :string, :default => "us-east-1"
@@ -91,6 +97,9 @@ class LogStash::Inputs::Kinesis < LogStash::Inputs::Base
       worker_id).
         withInitialPositionInStream(initial_position_in_stream).
         withRegionName(@region)
+
+    @kcl_config.withKinesisEndpoint(@kinesis_endpoint) if @kinesis_endpoint
+    @kcl_config.withwithDynamoDBEndpointEndpoint(@dynamodb_endpoint) if @dynamodb_endpoint
   end
 
   def run(output_queue)
